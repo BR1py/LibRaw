@@ -462,8 +462,8 @@ int LibRaw::try_dngsdk()
 	 * by the DNG. Do not run those values through LibRaw's camera-specific
 	 * input curve a second time. Apart from no longer being lossless, that
 	 * changes the relative Bayer-channel levels and causes a magenta cast.
-	 * Other DNG compression paths retain the historical LibRaw behaviour. */
-	if (ptype == ttShort && rawIFD->fCompression != ccJXL &&
+	 * An explicit DNG LinearizationTable must still be applied, including for JXL. */
+	if (ptype == ttShort && (rawIFD->fCompression != ccJXL || rawIFD->fLinearizationTableCount) &&
 	    !(stageBits & 1) && !is_curve_linear())
 	{
 	  imgdata.rawdata.raw_alloc = malloc(pixels * TagTypeSize(ptype));
